@@ -1,0 +1,33 @@
+<section>
+  <h1>Edit post</h1>
+
+  {{#if error}}
+    <div class="alert alert-danger" role="alert">
+      {{error}}
+    </div>
+  {{/if}}
+
+  <form action="/posts/{{post.id}}/edit" method="POST">
+    <div class="form-group">
+      <label for="title">Title</label>
+      <input name="title" type="text" class="form-control" id="title" placeholder="Enter title"
+        value="{{ post.title }}">
+    </div>
+
+    <div class="form-group">
+      <label for="image">Image</label>
+      <input name="image" type="text" class="form-control" id="image" placeholder="Enter image"
+        value="{{ post.title }}">
+    </div>
+
+    <div class="form-group">
+      <label for="text">Text</label>
+      <textarea name="text" type="text" class="form-control" id="text" placeholder="Enter post text"
+        rows="10">{{ post.text }}</textarea>
+    </div>
+
+    <button type="submit" class="btn btn-primary">
+      Edit Post
+    </button>
+  </form>
+</section>
