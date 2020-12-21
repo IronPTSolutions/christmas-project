@@ -25,7 +25,7 @@ app.set('view engine', 'hbs');
 const router = require('./config/routes.config');
 app.use('/', router);
 
-const port = 3000;
+const port = Number(process.env.PORT || 3000);
 app.listen(port, () => {
     console.log(`Ready! Listening on port ${port}`);
 });
