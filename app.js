@@ -3,6 +3,7 @@ const logger = require('morgan');
 const path = require('path');
 
 require('./config/hbs.config');
+require('./config/db.config');
 
 const app = express();
 
