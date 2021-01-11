@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const postsController = require('../controllers/posts.controller');
+const commentsController = require('../controllers/comments.controller');
 
 router.get('/posts', postsController.list);
 router.get('/posts/new', postsController.create);
@@ -9,6 +10,8 @@ router.get('/posts/:id', postsController.detail);
 router.get('/posts/:id/edit', postsController.edit);
 router.post('/posts/:id/edit', postsController.doEdit);
 router.post('/posts/:id/delete', postsController.delete);
+
+router.post('/posts/:postId/comments', commentsController.create)
 
 router.get('/', (req, res) => res.redirect('/posts'));
 

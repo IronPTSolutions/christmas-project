@@ -1,4 +1,4 @@
-<section>
+<section class="mb-3">
   <h1>Post detail</h1>
 
   <div class="card">
@@ -16,4 +16,47 @@
       </div>
     </div>
   </div>
+</section>
+
+<section>
+  <h2>Comments</h2>
+  
+  {{#each post.comments as |comment| }}
+    {{#with comment}}
+      <div class="card mb-2">
+        <h5 class="card-header">{{ title }}</h5>
+        <div class="card-body">
+          <p class="card-text">{{ message }}</p>
+        </div>
+      </div>
+    {{/with}}
+  {{/each}}
+
+  <form action="/posts/{{ post.id }}/comments" method="post" class="mt-3 mb-3">
+    <div class="input-group mb-1">
+      <div class="input-group-prepend">
+        <span class="input-group-text"><i class="fa fa-tag" aria-hidden="true"></i></span>
+      </div>
+      <input type="text" class="form-control {{#if errors.title }}is-invalid{{/if}}" name="title" placeholder="Title">
+      {{#if errors.title }}
+      <div class="invalid-feedback">
+        {{ errors.title }}
+      </div>
+      {{/if}}
+    </div>
+    <div class="input-group mb-1">
+      <div class="input-group-prepend">
+        <span class="input-group-text"><i class="fa fa-comment-o" aria-hidden="true"></i></span>
+      </div>
+      <textarea name="message" class="form-control {{#if errors.message }}is-invalid{{/if}}" rows="3"></textarea>
+      {{#if errors.message }}
+      <div class="invalid-feedback">
+        {{ errors.message }}
+      </div>
+      {{/if}}
+    </div>
+  
+    <button type="submit" class="btn btn-primary">Create comment</button>
+  </form>
+
 </section>

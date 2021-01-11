@@ -14,8 +14,18 @@ const schema = new Schema({
         type: String,
         required: true,
         minlength: 10,
-    },
+    }
 });
+
+schema.virtual('comments', {
+    ref: 'Comment',
+    localField: '_id',
+    foreignField: 'post',
+    options: {
+        sort: { createdAt: -1 },
+        limit: 10
+    }
+})
 
 const Post = mongoose.model('Post', schema);
 
