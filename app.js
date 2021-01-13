@@ -15,6 +15,12 @@ app.use(express.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(logger('dev'));
 
+app.use((req, res, next) => {
+  // la variable path se podrá usar desde cualquier vista de hbs (/register, /posts)
+  res.locals.path = req.path;
+  next();
+})
+
 /**
  * View setup
  */

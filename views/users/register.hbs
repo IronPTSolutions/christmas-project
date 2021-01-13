@@ -1,0 +1,26 @@
+<div class="col-12 col-sm-6 col-md-4 mx-auto mt-3">
+  <form action="/register" method="post">
+    <div class="input-group mb-1">
+      <div class="input-group-prepend">
+        <span class="input-group-text"><i class="fa fa-user"></i></span>
+      </div>
+      <input type="text" name="name" class="form-control {{isInvalid errors.name }}" placeholder="Username" value="{{ user.name }}">
+      {{errorFeedback errors.name }}
+    </div>
+    <div class="input-group mb-1">
+      <div class="input-group-prepend">
+        <span class="input-group-text"><i class="fa fa-envelope"></i></span>
+      </div>
+      <input type="text" name="email" class="form-control {{isInvalid errors.email }}" placeholder="Email" value="{{ user.email }}">
+      {{errorFeedback errors.email }}
+    </div>
+    <div class="input-group mb-1">
+      <div class="input-group-prepend">
+        <span class="input-group-text"><i class="fa fa-lock"></i></span>
+      </div>
+      <input type="password" name="password" class="form-control {{isInvalid errors.password }}" placeholder="Password">
+      {{errorFeedback errors.password }}
+    </div>
+    <button type="submit" class="btn btn-primary btn-block mt-2">Register</button>
+  </form>
+</div>

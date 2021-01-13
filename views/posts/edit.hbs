@@ -1,33 +1,28 @@
 <section>
   <h1>Edit post</h1>
-
-  {{#if error}}
-    <div class="alert alert-danger" role="alert">
-      {{error}}
-    </div>
-  {{/if}}
+  
+  <hr class="mt-0" />
 
   <form action="/posts/{{post.id}}/edit" method="POST">
     <div class="form-group">
       <label for="title">Title</label>
-      <input name="title" type="text" class="form-control" id="title" placeholder="Enter title"
-        value="{{ post.title }}">
+      <input name="title" type="text" class="form-control {{isInvalid errors.title }}" id="title" placeholder="Enter title" value="{{ post.title }}">
+      {{errorFeedback errors.title }}
     </div>
 
     <div class="form-group">
       <label for="image">Image</label>
-      <input name="image" type="text" class="form-control" id="image" placeholder="Enter image"
-        value="{{ post.title }}">
+      <input name="image" type="text" class="form-control {{isInvalid errors.image }}" id="image" placeholder="Enter image" value="{{ post.image }}">
+      {{errorFeedback errors.image }}
     </div>
 
     <div class="form-group">
       <label for="text">Text</label>
-      <textarea name="text" type="text" class="form-control" id="text" placeholder="Enter post text"
+      <textarea name="text" type="text" class="form-control {{isInvalid errors.text }}" id="text" placeholder="Enter post text"
         rows="10">{{ post.text }}</textarea>
+      {{errorFeedback errors.text }}
     </div>
 
-    <button type="submit" class="btn btn-primary">
-      Edit Post
-    </button>
+    <button type="submit" class="btn btn-primary">Edit Post</button>
   </form>
 </section>
