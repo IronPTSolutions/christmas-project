@@ -1,39 +1,33 @@
 <section>
   <h1>New post</h1>
 
+  <hr class="mt-0" />
+
   <form action="/posts" method="POST">
     <div class="form-group">
       <label for="title">Title</label>
-      <input name="title" type="text" class="form-control {{#if errors.title }}is-invalid{{/if}}" id="title" placeholder="Enter title" value="{{ post.title }}">
-      {{#if errors.title }}
-        <div class="invalid-feedback">
-          {{ errors.title }}
-        </div>
+      <input name="title" type="text" class="form-control {{#if errors.title}}is-invalid{{/if}}" id="title" placeholder="Enter title" value="{{ post.title }}">
+      {{#if errors.title}}
+        <div class="invalid-feedback">{{ errors.title }}</div>
       {{/if}}
     </div>
 
     <div class="form-group">
       <label for="image">Image</label>
-      <input name="image" type="text" class="form-control {{#if errors.image }}is-invalid{{/if}}" id="image" placeholder="Enter image" value="{{ post.title }}">
-      {{#if errors.image }}
-        <div class="invalid-feedback">
-          {{ errors.image }}
-        </div>
+      <input name="image" type="text" class="form-control {{#if errors.image}}is-invalid{{/if}}" id="image" placeholder="Enter image" value="{{ post.image }}">
+      {{#if errors.image}}
+        <div class="invalid-feedback">{{ errors.image }}</div>
       {{/if}}
     </div>
 
     <div class="form-group">
       <label for="text">Text</label>
-      <textarea name="text" type="text" class="form-control {{#if errors.text }}is-invalid{{/if}}" id="text" placeholder="Enter post text" rows="10">{{ post.text }}</textarea>
-      {{#if errors.text }}
-        <div class="invalid-feedback">
-          {{ errors.text }}
-        </div>
+      <textarea name="text" type="text" class="form-control {{#if errors.title}}is-invalid{{/if}}" id="text" placeholder="Enter post text" rows="10">{{ post.text }}</textarea>
+      {{#if errors.text}}
+        <div class="invalid-feedback">{{ errors.text }}</div>
       {{/if}}
     </div>
 
-    <button type="submit" class="btn btn-primary">
-      New Post
-    </button>
+    <button type="submit" class="btn btn-primary">Create Post</button>
   </form>
 </section>

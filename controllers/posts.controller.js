@@ -52,7 +52,7 @@ module.exports.edit = (req, res, next) => {
 };
 
 module.exports.doEdit = (req, res, next) => {
-  Post.findByIdAndUpdate(req.params.id, req.body)
+  Post.findByIdAndUpdate(req.params.id, { $set: req.body }, { runValidators: true })
     .then(post => {
       if (post) {
         res.render('posts/detail', { post });
@@ -61,9 +61,11 @@ module.exports.doEdit = (req, res, next) => {
       }
     }).catch(error => {
       if (error instanceof mongoose.Error.ValidationError) {
+        const post = req.body;
+        post.id = req.params.id;
         res.render('posts/edit', { 
           errors: error.errors,
-          post: req.body 
+          post: post
         });
       } else {
         next(error);
