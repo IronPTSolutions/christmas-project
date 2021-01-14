@@ -13,6 +13,10 @@ router.post('/posts/:id/edit', postsController.doEdit);
 router.post('/posts/:id/delete', postsController.delete);
 router.post('/posts/:postId/comments', commentsController.create);
 
+router.get('/register', usersController.register);
+router.post('/register', usersController.doRegister);
+
+
 // Añadir rutas de registro
 
 router.get('/', (req, res) => res.redirect('/posts'));
