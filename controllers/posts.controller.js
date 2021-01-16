@@ -4,7 +4,7 @@ const Post = require('../models/post.model');
 
 module.exports.list = (req, res, next) => {
   Post.find()
-    .then(posts => res.render('posts/list', { posts }))
+    .then((posts) => res.render('posts/list', { posts }))
     .catch(next);
 };
 
@@ -13,13 +13,16 @@ module.exports.create = (req, res, next) => {
 };
 
 module.exports.doCreate = (req, res, next) => {
-  Post.create(req.body)
-    .then(post => res.redirect(`/posts/${post.id}`))
-    .catch(error => {
+  Post.create({
+    ...req.body,
+    author: req.currentUser.id,
+  })
+    .then((post) => res.redirect(`/posts/${post.id}`))
+    .catch((error) => {
       if (error instanceof mongoose.Error.ValidationError) {
-        res.render('posts/new', { 
+        res.render('posts/new', {
           errors: error.errors,
-          post: req.body 
+          post: req.body,
         });
       } else {
         next(error);
@@ -28,9 +31,11 @@ module.exports.doCreate = (req, res, next) => {
 };
 
 module.exports.detail = (req, res, next) => {
+  console.log(req.headers);
+
   Post.findById(req.params.id)
     .populate('comments')
-    .then(post => {
+    .then((post) => {
       if (post) {
         res.render('posts/detail', { post });
       } else {
@@ -48,24 +53,26 @@ module.exports.edit = (req, res, next) => {
       } else {
         next(createError(404, 'Post does not exists'));
       }
-    }).catch(next);
+    })
+    .catch(next);
 };
 
 module.exports.doEdit = (req, res, next) => {
   Post.findByIdAndUpdate(req.params.id, { $set: req.body }, { runValidators: true })
-    .then(post => {
+    .then((post) => {
       if (post) {
         res.render('posts/detail', { post });
       } else {
         next(createError(404, 'Post does not exists'));
       }
-    }).catch(error => {
+    })
+    .catch((error) => {
       if (error instanceof mongoose.Error.ValidationError) {
         const post = req.body;
         post.id = req.params.id;
-        res.render('posts/edit', { 
+        res.render('posts/edit', {
           errors: error.errors,
-          post: post
+          post: post,
         });
       } else {
         next(error);
@@ -75,7 +82,7 @@ module.exports.doEdit = (req, res, next) => {
 
 module.exports.delete = (req, res, next) => {
   Post.findByIdAndDelete(req.params.id)
-    .then(post => {
+    .then((post) => {
       if (post) {
         res.redirect('/posts');
       } else {
