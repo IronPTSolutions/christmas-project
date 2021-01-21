@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const User = require('../models/user.model');
+const mailer = require('../config/mailer.config');
 
 module.exports.register = (req, res, next) => {
   res.render('users/register');
@@ -18,7 +19,11 @@ module.exports.doRegister = (req, res, next) => {
       if (user) {
         renderWithErrors({ email: 'Email is already registered ' });
       } else {
-        return User.create(req.body).then((user) => res.redirect('/posts'));
+        return User.create(req.body).then((user) => {
+          mailer.sendValidationEmail(user.email, user.verified.token, user.name);
+
+          res.render('users/login', { verification: true });
+        });
       }
     })
     .catch((error) => {
@@ -35,7 +40,7 @@ module.exports.login = (req, res, next) => {
 };
 
 module.exports.doLogin = (req, res, next) => {
-  User.findOne({ email: req.body.email })
+  User.findOne({ email: req.body.email, 'verified.date': { $ne: null } })
     .then((user) => {
       if (user) {
         user.checkPassword(req.body.password).then((match) => {
@@ -48,7 +53,7 @@ module.exports.doLogin = (req, res, next) => {
           }
         });
       } else {
-        res.render('users/login', { user: req.body, errors: { email: 'user not found' } });
+        res.render('users/login', { user: req.body, errors: { email: 'user not found or not verified' } });
       }
     })
     .catch(next);
@@ -58,4 +63,16 @@ module.exports.logout = (req, res, next) => {
   req.session.destroy();
 
   res.redirect('/login');
+};
+
+module.exports.activate = (req, res, next) => {
+  User.findOneAndUpdate(
+    { 'verified.token': req.query.token },
+    { $set: { verified: { date: new Date(), token: null } } },
+    { runValidators: true },
+  )
+    .then((user) => {
+      res.redirect('/login');
+    })
+    .catch(next);
 };

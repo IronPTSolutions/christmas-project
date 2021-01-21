@@ -15,6 +15,7 @@ router.post('/posts/:id/delete', secure.isAuthenticated, postsController.delete)
 router.post('/posts/:postId/comments', secure.isAuthenticated, commentsController.create);
 router.post('/logout', secure.isAuthenticated, usersController.logout);
 
+router.get('/activate', usersController.activate);
 router.get('/register', usersController.register);
 router.post('/register', usersController.doRegister);
 router.get('/login', usersController.login);

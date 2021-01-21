@@ -24,6 +24,18 @@ const userSchema = new Schema(
       required: 'Password is required',
       match: [PASSWORD_PATTERN, 'Password needs at least 8 chars'],
     },
+    verified: {
+      date: Date,
+      token: {
+        type: String,
+        default: () =>
+          Math.random().toString(36).substr(2) +
+          Math.random().toString(36).substr(2) +
+          Math.random().toString(36).substr(2) +
+          Math.random().toString(36).substr(2) +
+          Math.random().toString(36).substr(2),
+      },
+    },
   },
   { timestamps: true },
 );
