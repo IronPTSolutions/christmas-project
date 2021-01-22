@@ -56,6 +56,21 @@ module.exports.doLogin = (req, res, next) => {
   })(req, res, next);
 };
 
+module.exports.loginWithGoogle = (req, res, next) => {
+  passport.authenticate('google-auth', (error, user, validations) => {
+    if (error) {
+      next(error);
+    } else if (!user) {
+      res.status(400).render('users/login', { user: req.body, errors: validations });
+    } else {
+      req.login(user, error => {
+        if (error) next(error)
+        else res.redirect('/')
+      })
+    }
+  })(req, res, next);
+}
+
 module.exports.logout = (req, res, next) => {
   req.logout();
   res.redirect('/login');
