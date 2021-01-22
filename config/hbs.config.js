@@ -22,7 +22,6 @@ hbs.registerHelper('formError', (error) => {
   return error ? new hbs.SafeString(`<div class="invalid-feedback">${error}</div>`) : ''
 });
 
-
 /** Content Helpers */
 hbs.registerHelper('limitChars', (maxChars, options) => {
   return options.fn().slice(0, maxChars) + '...';

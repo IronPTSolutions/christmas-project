@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const httpError = require('http-errors');
 const User = require('../models/user.model');
 const mailer = require('../config/mailer.config');
 
@@ -69,10 +70,12 @@ module.exports.activate = (req, res, next) => {
   User.findOneAndUpdate(
     { 'verified.token': req.query.token },
     { $set: { verified: { date: new Date(), token: null } } },
-    { runValidators: true },
-  )
-    .then((user) => {
+    { runValidators: true }
+  ).then(user => {
+    if (!user) {
+      next(httpError(404, 'Invalid activation token'))
+    } else {
       res.redirect('/login');
-    })
-    .catch(next);
+    }
+  }).catch(next);
 };
