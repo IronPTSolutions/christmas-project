@@ -1,4 +1,7 @@
 const express = require('express');
+const passport = require('passport');
+const GOOGLE_SCOPES = ['https://www.googleapis.com/auth/userinfo.email', 'https://www.googleapis.com/auth/userinfo.profile']
+
 const router = express.Router();
 const postsController = require('../controllers/posts.controller');
 const commentsController = require('../controllers/comments.controller');
@@ -20,6 +23,8 @@ router.get('/register', usersController.register);
 router.post('/register', usersController.doRegister);
 router.get('/login', usersController.login);
 router.post('/login', usersController.doLogin);
+router.get('/authenticate/google', passport.authenticate('google-auth', { scope: GOOGLE_SCOPES }))
+router.get('/authenticate/google/cb', usersController.loginWithGoogle)
 
 router.get('/', (req, res) => res.redirect('/posts'));
 

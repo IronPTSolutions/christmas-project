@@ -24,6 +24,9 @@ const userSchema = new Schema(
       required: 'Password is required',
       match: [PASSWORD_PATTERN, 'Password needs at least 8 chars'],
     },
+    social: {
+      google: String
+    },
     verified: {
       date: Date,
       token: {
