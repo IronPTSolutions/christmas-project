@@ -25,6 +25,7 @@ router.get('/login', usersController.login);
 router.post('/login', usersController.doLogin);
 router.get('/authenticate/google', passport.authenticate('google-auth', { scope: GOOGLE_SCOPES }))
 router.get('/authenticate/google/cb', usersController.loginWithGoogle)
+router.get('/users', secure.isAuthenticated, secure.checkRole('admin'), usersController.list);
 
 router.get('/', (req, res) => res.redirect('/posts'));
 

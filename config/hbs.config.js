@@ -13,6 +13,14 @@ hbs.registerHelper('active', (currentPath, hint, options) => {
   }
 });
 
+hbs.registerHelper('checkRole', (user, role, options) => {
+  if (user && user.role === role) {
+    return options.fn();
+  } else {
+    return options.inverse();
+  }
+});
+
 /** Form Helpers */
 hbs.registerHelper('isInvalid', (error) => {
   return error ? 'is-invalid' : ''
