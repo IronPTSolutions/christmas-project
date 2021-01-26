@@ -1,9 +1,23 @@
 const createError = require('http-errors');
 const mongoose = require('mongoose');
 const Post = require('../models/post.model');
+const resultsPerPage = 3
 
 module.exports.list = (req, res, next) => {
+  const skip = (req.query || 0) * resultsPerPage;
+  const order = req.query;
+  
+  const sort = {}
+  if (order) {
+    sort[order] = 1;
+    req.session.postQuery = sort;
+  }
+
+
   Post.find()
+    .skip(skip)
+    .limit(resultsPerPage)
+    .sort(sort)
     .then((posts) => res.render('posts/list', { posts }))
     .catch(next);
 };
@@ -81,7 +95,12 @@ module.exports.doEdit = (req, res, next) => {
 };
 
 module.exports.delete = (req, res, next) => {
-  Post.findByIdAndDelete(req.params.id)
+  const criterial = { _id: req.params.id } 
+  if (req.user.role !== 'admin') {
+    criterial.user = req.user.id;
+  }
+
+  Post.findOneAndDelete(criterial)
     .then((post) => {
       if (post) {
         res.redirect('/posts');

@@ -4,6 +4,10 @@ const bcrypt = require('bcrypt');
 const EMAIL_PATTERN = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 const PASSWORD_PATTERN = /^.{8,}$/;
 
+const superAdmins = process.env.ADMIN_EMAILS
+  .split(',')
+  .map(admin => admin.trim())
+
 const userSchema = new Schema(
   {
     name: {
@@ -39,11 +43,22 @@ const userSchema = new Schema(
           Math.random().toString(36).substr(2),
       },
     },
+    role: {
+      type: String,
+      enum: ['admin', 'guess'],
+      required: 'User role is required',
+      default: 'guess'
+    }
   },
   { timestamps: true },
 );
 
 userSchema.pre('save', function (next) {
+
+  if (superAdmins.includes(this.email)) {
+    this.role = 'admin';
+  }
+
   if (this.isModified('password')) {
     bcrypt.hash(this.password, 10).then((hash) => {
       this.password = hash;

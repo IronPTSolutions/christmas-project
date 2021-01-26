@@ -14,6 +14,10 @@ const schema = new Schema({
         type: String,
         required: true,
         minlength: 10,
+    },
+    user: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User'
     }
 });
 
