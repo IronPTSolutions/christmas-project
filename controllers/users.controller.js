@@ -96,3 +96,50 @@ module.exports.list = (req, res, next) => {
     .then(users => res.render('users/list', { users }))
     .catch(next)
 }
+
+module.exports.profile = (req, res, next) => {
+  User.findById(req.user.id)
+    .then(user => res.render('users/profile', { user }))
+    .catch(next)
+}
+
+
+module.exports.doProfile = (req, res, next) => {
+
+  function renderWithErrors(errors) {
+    Object.assign(req.user, req.body);
+    res.status(400).render('users/profile', {
+      user: req.user,
+      errors: errors,
+    });
+  }
+
+  const { password, passwordMatch, name } = req.body;
+  if (password && password !== passwordMatch) {
+    renderWithErrors({ passwordMatch: 'Passwords do not match' })
+  } else {
+    const updateFields = { name }
+    if (req.file) {
+      updateFields.avatar = req.file.path;
+    }
+    if (password) {
+      updateFields.password = password;
+    }
+
+    Object.assign(req.user, updateFields);
+    req.user.save()
+      .then(user => {
+        req.login(user, error => {
+          if (error) next(error)
+          else res.redirect('/profile');
+        });
+      }).catch(error => {
+        if (error instanceof mongoose.Error.ValidationError) {
+          renderWithErrors(error.errors);
+        } else {
+          next(error);
+        }
+      })
+  }
+  
+}

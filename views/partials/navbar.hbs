@@ -14,7 +14,7 @@
         {{#if currentUser}}
           <li class="nav-item">
             <form action="/logout" method="POST">
-              <span class="mr-3 text-muted">{{currentUser.email}}</span>
+              <a href="/profile"><span class="mr-3 text-muted">{{currentUser.email}}</span></a>
               <button type="submit" class="btn btn-danger btn-sm" href="/logout">Logout</button>
             </form>
           </li>

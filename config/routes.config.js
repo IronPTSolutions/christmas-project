@@ -7,6 +7,7 @@ const postsController = require('../controllers/posts.controller');
 const commentsController = require('../controllers/comments.controller');
 const usersController = require('../controllers/users.controller');
 const secure = require('../middlewares/secure.middleware');
+const storage = require('../config/storage.config');
 
 router.get('/posts', secure.isAuthenticated, postsController.list);
 router.get('/posts/new', secure.isAuthenticated, postsController.create);
@@ -26,6 +27,8 @@ router.post('/login', usersController.doLogin);
 router.get('/authenticate/google', passport.authenticate('google-auth', { scope: GOOGLE_SCOPES }))
 router.get('/authenticate/google/cb', usersController.loginWithGoogle)
 router.get('/users', secure.isAuthenticated, secure.checkRole('admin'), usersController.list);
+router.get('/profile', secure.isAuthenticated, usersController.profile);
+router.post('/profile', secure.isAuthenticated, storage.single('avatar'), usersController.doProfile);
 
 router.get('/', (req, res) => res.redirect('/posts'));
 
