@@ -47,6 +47,12 @@ const userSchema = new Schema(
       type: String,
       enum: ['admin', 'guess'],
       default: 'guess'
+    },
+    avatar: {
+      type: String,
+      default: function() {
+        return `https://i.pravatar.cc/150?u=${this.id}`
+      }
     }
   },
   { timestamps: true },

@@ -3,6 +3,7 @@ const httpError = require('http-errors');
 const User = require('../models/user.model');
 const mailer = require('../config/mailer.config');
 const passport = require('passport');
+const flash = require('connect-flash');
 
 module.exports.register = (req, res, next) => {
   res.render('users/register');
@@ -24,7 +25,10 @@ module.exports.doRegister = (req, res, next) => {
         return User.create(req.body).then((user) => {
           mailer.sendValidationEmail(user.email, user.verified.token, user.name);
 
-          res.render('users/login', { verification: true });
+          // Guardamos en el cookie de flash la información que queremos mostrar en la página de login tras el redirect
+          // esta información solo estará disponible durante el primer redirect, después se borra.
+          req.flash('data', JSON.stringify({ verification: true }))
+          res.redirect('/login');
         });
       }
     })
@@ -95,4 +99,51 @@ module.exports.list = (req, res, next) => {
   User.find()
     .then(users => res.render('users/list', { users }))
     .catch(next)
+}
+
+module.exports.profile = (req, res, next) => {
+  User.findById(req.user.id)
+    .then(user => res.render('users/profile', { user }))
+    .catch(next)
+}
+
+
+module.exports.doProfile = (req, res, next) => {
+
+  function renderWithErrors(errors) {
+    Object.assign(req.user, req.body);
+    res.status(400).render('users/profile', {
+      user: req.user,
+      errors: errors,
+    });
+  }
+
+  const { password, passwordMatch, name } = req.body;
+  if (password && password !== passwordMatch) {
+    renderWithErrors({ passwordMatch: 'Passwords do not match' })
+  } else {
+    const updateFields = { name }
+    if (req.file) {
+      updateFields.avatar = req.file.path;
+    }
+    if (password) {
+      updateFields.password = password;
+    }
+
+    Object.assign(req.user, updateFields);
+    req.user.save()
+      .then(user => {
+        req.login(user, error => {
+          if (error) next(error)
+          else res.redirect('/profile');
+        });
+      }).catch(error => {
+        if (error instanceof mongoose.Error.ValidationError) {
+          renderWithErrors(error.errors);
+        } else {
+          next(error);
+        }
+      })
+  }
+  
 }
