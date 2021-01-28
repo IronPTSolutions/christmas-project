@@ -3,6 +3,7 @@ const httpError = require('http-errors');
 const User = require('../models/user.model');
 const mailer = require('../config/mailer.config');
 const passport = require('passport');
+const flash = require('connect-flash');
 
 module.exports.register = (req, res, next) => {
   res.render('users/register');
@@ -24,7 +25,10 @@ module.exports.doRegister = (req, res, next) => {
         return User.create(req.body).then((user) => {
           mailer.sendValidationEmail(user.email, user.verified.token, user.name);
 
-          res.render('users/login', { verification: true });
+          // Guardamos en el cookie de flash la información que queremos mostrar en la página de login tras el redirect
+          // esta información solo estará disponible durante el primer redirect, después se borra.
+          req.flash('data', JSON.stringify({ verification: true }))
+          res.redirect('/login');
         });
       }
     })
